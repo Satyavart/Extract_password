@@ -1,6 +1,0 @@
-{
-    "python.pythonPath": "env\\Scripts\\python.exe",
-    "python.linting.banditEnabled": false,
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true
-}

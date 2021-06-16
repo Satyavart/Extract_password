@@ -34,7 +34,7 @@ from getpass import getpass
 from base64 import b64decode
 from urllib.parse import urlparse
 from configparser import ConfigParser
-from subprocess import run, PIPE, DEVNULL
+from subprocess import run, PIPE, DEVNULL, Popen
 from typing import Optional, Iterator, Any
 
 LOG: logging.Logger
@@ -62,15 +62,19 @@ def get_version() -> str:
     def internal_version():
         return '.'.join(map(str, __version_info__[:3])) + ''.join(__version_info__[3:])
 
+    return internal_version()
     try:
-        p = run(["git", "describe", "--tags"], stdout=PIPE, stderr=DEVNULL, text=True)
-    except FileNotFoundError:
+        q = Popen(["git", "describe", "--tags"], shell=True, stdout=PIPE, stderr=PIPE,stdin=PIPE)
+        p=''
+        while q.poll() is None:
+            p = p + (q.stdout.readline().decode('utf-8').strip())
+    except:
         return internal_version()
 
-    if p.returncode:
+    if q.returncode:
         return internal_version()
     else:
-        return p.stdout.strip()
+        return q.stdout.strip()
 
 
 __version_info__ = (1, 0, 0, "+git")
@@ -669,7 +673,11 @@ class PassOutputFormat(OutputFormat):
         LOG.debug("Testing if password store is installed and configured")
 
         try:
-            p = run([self.cmd], capture_output=True, text=True)
+            q = Popen([self.cmd],shell=True,stdout=PIPE, stderr=PIPE, stdin=PIPE)
+            p = ''
+            while q.poll() is None:
+                p = p + (q.stdout.readline().decode('utf-8').strip())
+            print(p)
         except FileNotFoundError as e:
             if e.errno == 2:
                 LOG.error("Password store is not installed and exporting was requested")
@@ -681,7 +689,7 @@ class PassOutputFormat(OutputFormat):
 
         LOG.debug("pass returned:\nStdout: %s\nStderr: %s", p.stdout, p.stderr)
 
-        if p.returncode != 0:
+        if q.returncode != 0:
             if 'Try "pass init"' in p.stderr:
                 LOG.error("Password store was not initialized.")
                 LOG.error("Initialize the password store manually by using 'pass init'")
@@ -746,10 +754,12 @@ class PassOutputFormat(OutputFormat):
 
                 LOG.debug("Running command '%s' with stdin '%s'", cmd, data)
 
-                p = run(cmd, input=data, capture_output=True, text=True)
-
-                if p.returncode != 0:
-                    LOG.error("ERROR: passwordstore exited with non-zero: %s", p.returncode)
+                q = Popen(cmd, input=data, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+                p = ''
+                while q.poll() is None:
+                    p = p + (q.stdout.readline().decode('utf-8').strip())
+                if q.returncode != 0:
+                    LOG.error("ERROR: passwordstore exited with non-zero: %s", q.returncode)
                     LOG.error("Stdout: %s\nStderr: %s", p.stdout, p.stderr)
                     raise Exit(Exit.PASSSTORE_ERROR)
 
@@ -1050,18 +1060,21 @@ def password() -> None:
     setup_logging(args)
 
     LOG.info("Running firefox_decrypt version: %s", __version__)
-    LOG.debug("Parsed commandline arguments: %s", args)
-    encodings = (
-        ("stdin", sys.stdin.encoding),
-        ("stdout", sys.stdout.encoding),
-        ("stderr", sys.stderr.encoding),
-        ("locale", identify_system_locale()),
-    )
+    try:
+        LOG.debug("Parsed commandline arguments: %s", args)
+        encodings = (
+            ("stdin", sys.stdin.encoding),
+            ("stdout", sys.stdout.encoding),
+            ("stderr", sys.stderr.encoding),
+            ("locale", identify_system_locale()),
+        )
+        LOG.debug(
+            "Running with encodings: %s: %s, %s: %s, %s: %s, %s: %s",
+            *chain(*encodings)
+        )
+    except:
+        pass
 
-    LOG.debug(
-        "Running with encodings: %s: %s, %s: %s, %s: %s, %s: %s",
-        *chain(*encodings)
-    )
 
     #for stream, encoding in encodings:
     #    if encoding.lower() != DEFAULT_ENCODING:

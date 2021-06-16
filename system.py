@@ -29,15 +29,20 @@ def info():
         f.write("="*40 + "System Information" + "="*40)
         uname = platform.uname()
     # traverse the info
-        Id = subprocess.check_output(['systeminfo']).decode('utf-8').split('\n')
+        Id = subprocess.Popen(['systeminfo'],shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        line = []
+        while Id.poll() is None:
+            text = (Id.stdout.readline().decode('utf-8').strip())
+            if text not in line:
+                line.append(text)
         new = []
         
     # arrange the string into clear info
-        for item in Id:
+        for item in line:
             new.append(str(item.split("\r")[:-1]))
-        for i in new:
-            f.write("\n" +i[2:-2])
-            
+            f.write("\n" + item)
+        
+
         f.write("\n" +f"System: {uname.system}")
         f.write("\n" +f"Node Name: {uname.node}")
         f.write("\n" +f"Release: {uname.release}")

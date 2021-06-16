@@ -1,2 +1,2 @@
-email = "testarena46@gmail.com"
-password = "Awsm@123"
+email = "mail@gmail.com"
+password = "password@123"

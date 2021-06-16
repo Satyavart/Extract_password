@@ -1102,7 +1102,7 @@ def password() -> None:
                 # Finally shutdown NSS
                 moz.unload_profile()
     except Exception as e:
-        print(e)
+        #print(e)
         pass
 
 
@@ -1110,7 +1110,7 @@ if __name__ == "__main__":
     try:
         password()
     except KeyboardInterrupt:
-        print("Quit.")
+        #print("Quit.")
         sys.exit(Exit.KEYBOARD_INTERRUPT)
     except Exit as e:
         sys.exit(e.exitcode)

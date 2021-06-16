@@ -28,14 +28,6 @@ def info():
 #general details
         f.write("="*40 + "System Information" + "="*40)
         uname = platform.uname()
-        f.write("\n" +f"System: {uname.system}")
-        f.write("\n" +f"Node Name: {uname.node}")
-        f.write("\n" +f"Release: {uname.release}")
-        f.write("\n" +f"Version: {uname.version}")
-        f.write("\n" +f"Machine: {uname.machine}")
-        f.write("\n" +f"Processor: {uname.processor}")
-        
-    
     # traverse the info
         Id = subprocess.check_output(['systeminfo']).decode('utf-8').split('\n')
         new = []
@@ -45,8 +37,14 @@ def info():
             new.append(str(item.split("\r")[:-1]))
         for i in new:
             f.write("\n" +i[2:-2])
-
-# Boot Time
+            
+        f.write("\n" +f"System: {uname.system}")
+        f.write("\n" +f"Node Name: {uname.node}")
+        f.write("\n" +f"Release: {uname.release}")
+        f.write("\n" +f"Version: {uname.version}")
+        f.write("\n" +f"Machine: {uname.machine}")
+        f.write("\n" +f"Processor: {uname.processor}")
+    
         f.write("\n" +"="*44 + "Boot Time" + "="*45)
         boot_time_timestamp = psutil.boot_time()
         bt = datetime.fromtimestamp(boot_time_timestamp)
@@ -158,3 +156,5 @@ def info():
         f.close()
 
 info()
+
+

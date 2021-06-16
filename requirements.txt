@@ -1,0 +1,5 @@
+psutil==5.7.2
+tabulate==0.8.9
+pywin32==227
+GPUtil==1.4.0
+pycryptodomex==3.10.1

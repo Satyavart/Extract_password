@@ -9,4 +9,4 @@ python script.py
 which save all the password and system information of the targets PC.
 These files can easily be retrived using E-mail/reverse shell or something else
 
-Here is the example of code using a Trojan virus
+Here is the example of code using a Trojan virus in the file "WHO Annexe.pdf".

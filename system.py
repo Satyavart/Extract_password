@@ -9,6 +9,10 @@ import uuid
 from savloc import temp
 import os
 
+# Check public ip using CLI
+# (Invoke-WebRequest ifconfig.me/ip).Content.Trim()
+# nslookup myip.opendns.com resolver1.opendns.com 
+
 def get_size(bytes, suffix="B"):
     """
     Scale bytes to its proper format
